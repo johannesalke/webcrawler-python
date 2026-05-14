@@ -2,8 +2,7 @@
 import urllib.parse as parse
 import os.path 
 from bs4 import BeautifulSoup
-
-
+import requests
 
 def normalize_url(url):
     parsed_url= parse.urlparse(url)
@@ -49,6 +48,7 @@ def get_urls_from_html(html, base_url):
         hrefs = [link.get("href") for link in a_links]
     
     results = [parse.urljoin(base_url,url)for url in hrefs]
+    print(results)
     return results
 
 
@@ -87,8 +87,37 @@ def extract_page_data(html,page_url):
     page["outgoing_links"] = links 
     page["image_urls"] = image_urls 
     return page
+
     
-    
+def get_html(url):
+    res = requests.get(url,headers={"User-Agent":"BootCrawler/1.0"})
+    if res.status_code >= 400:
+        raise Exception(f"Error on making request: {res.status_code}")
+    if "text/html" not  in res.headers.get("content-type",""):
+        raise Exception(f"Content type isn't text/html. Instead it is: {res.headers.get("content-type")}")
+    html = res.text
+    return html
+
+
+
+def crawl_page(base_url,current_url=None,page_data=None):
+    if page_data is None:
+        page_data = {}
+    if current_url is None:
+        current_url = base_url
+    if base_url not in current_url:
+        return page_data
+    norm = normalize_url(current_url)
+    if norm in page_data.keys():
+        return page_data
+    html = get_html("https://"+norm) 
+    print(f"Got html for {norm}")
+    data = extract_page_data(html,current_url)   
+    page_data[norm] = data
+    links = data.get("outgoing_links",[])
+    for link in links:
+        page_data = crawl_page(base_url,link,page_data)
+    return page_data    
 
 
 

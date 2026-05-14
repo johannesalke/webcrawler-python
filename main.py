@@ -1,5 +1,7 @@
 import sys
-import requests
+
+from crawl import *
+
 
 
 
@@ -14,12 +16,16 @@ def main():
         exit(1)
     base_url = args[1]
     print(f"starting crawl of: {base_url}")
+    #html= get_html(base_url)
+    #print(html)
+    results:dict = crawl_page(base_url)
+    print(f"Number of pages crawled: {len(results)}")
+    for key in results.keys():
+        print(f"- {results[key]["url"]}")
+        
 
 
 
-
-def get_html(url):
-    
 
 
 
