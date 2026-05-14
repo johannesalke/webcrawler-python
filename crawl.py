@@ -7,7 +7,7 @@ import requests
 def normalize_url(url):
     parsed_url= parse.urlparse(url)
     pth = parsed_url.path.strip("/")
-    return os.path.join( parsed_url.netloc ,pth)
+    return str(os.path.join( parsed_url.netloc ,pth))
 
 def get_heading_from_html(html):
     soup = BeautifulSoup(html,"html.parser")
@@ -48,7 +48,7 @@ def get_urls_from_html(html, base_url):
         hrefs = [link.get("href") for link in a_links]
     
     results = [parse.urljoin(base_url,url)for url in hrefs]
-    print(results)
+    #print(results)
     return results
 
 
@@ -118,6 +118,18 @@ def crawl_page(base_url,current_url=None,page_data=None):
     for link in links:
         page_data = crawl_page(base_url,link,page_data)
     return page_data    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
