@@ -136,9 +136,6 @@ def crawl_page(base_url,current_url=None,page_data=None):
 
 
 
-#Suspicion: Beautiful soups, or at least the find() element extractions, are a more expansive implementation of dictionaries with additional methods to assist in finding and modifying elements and attributes. 
-
-
 
 
 
